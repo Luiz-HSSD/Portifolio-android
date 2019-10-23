@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:App4"
+             x:Class="App4.MainPage">
+
+    <StackLayout>
+        <!-- Place new controls here -->
+      <StackLayout Padding="10" Orientation="Horizontal">
+    	<Label Text="cep" 
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+      <Entry Keyboard="Numeric" WidthRequest="150"
+             x:Name="cep"
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+      </StackLayout>
+      <StackLayout Padding="10" Orientation="Horizontal">
+      <Label Text="comprimento (cm)" 
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+      <Picker WidthRequest="150"
+             x:Name="comp"
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" >
+              <Picker.Items>
+          </Picker.Items>
+    </Picker>
+      </StackLayout>
+      <StackLayout Padding="10" Orientation="Horizontal">
+      <Label Text="largura (cm)" 
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+      <Picker WidthRequest="150"
+             x:Name="largura"
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" >
+              <Picker.Items>
+          </Picker.Items>
+    </Picker>
+      </StackLayout>
+      <StackLayout Padding="10" Orientation="Horizontal">
+      <Label Text="altura (cm)" 
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+      <Picker WidthRequest="150"
+             x:Name="altura"
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" >
+              <Picker.Items>
+          </Picker.Items>
+    </Picker>
+      </StackLayout>
+      <StackLayout Padding="10" Orientation="Horizontal">
+      <Label Text="Peso (Kg)" 
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+      <Picker WidthRequest="150"
+             x:Name="pesostr"
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" >
+              <Picker.Items>
+          </Picker.Items>
+    </Picker>      
+      </StackLayout>
+      <StackLayout Padding="10" Orientation="Horizontal">
+      <Label Text="Aviso Recebimento" 
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+      <Switch   x:Name="avisoRece"
+           HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand"/>
+      </StackLayout>
+      <StackLayout Padding="10" Orientation="Horizontal">
+      <Button Text="Calcular Entrega"
+           x:Name="button1"
+              Clicked="selfDestruct"
+            HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+          <Button Text="buscar cep"
+           x:Name="button2"
+              Clicked="selfDestruct2"
+            HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+
+      </StackLayout>
+    <StackLayout Padding="10" Orientation="Horizontal">
+          <Button Text="consultar cep"
+           x:Name="button3"
+              Clicked="selfDestruct3"
+            HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+          <Button Text="definir cep origem"
+           x:Name="button4"
+              Clicked="Bora"
+            HorizontalOptions="Center"
+           VerticalOptions="CenterAndExpand" />
+    </StackLayout>
+    </StackLayout>
+
+</ContentPage>
