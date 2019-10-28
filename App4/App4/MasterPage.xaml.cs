@@ -28,6 +28,7 @@ namespace App4
             await NavPag.PopToRootAsync();
             await NavPag.PopAsync();
             await NavPag.PushAsync(new Maps());
+            IsPresented = false;
         }
 
         private async void Button_Clicked_1(object sender, EventArgs e)
@@ -35,6 +36,7 @@ namespace App4
             await NavPag.PopToRootAsync();
             await NavPag.PopAsync();
             await NavPag.PushAsync(new MainPage());
+            IsPresented = false;
         }
 
         private async void Button_Clicked_2(object sender, EventArgs e)
@@ -42,6 +44,7 @@ namespace App4
             await NavPag.PopToRootAsync();
             await NavPag.PopAsync();
             await NavPag.PushAsync(new MainPage());
+            IsPresented = false;
         }
 
         private async void Button_Clicked_3(object sender, EventArgs e)
@@ -50,6 +53,23 @@ namespace App4
             await NavPag.PopToRootAsync();
             await NavPag.PopAsync();
             await NavPag.PushAsync(new BiometricPage());
+            IsPresented = false;
+        }
+
+        private async void Button_Clicked_4(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new LoginSuccessPage());
+            IsPresented = false;
+        }
+
+        private async void Button_Clicked_5(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new notificacao());
+            IsPresented = false;
         }
     }
 }

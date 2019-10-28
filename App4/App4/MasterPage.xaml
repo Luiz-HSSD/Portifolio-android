@@ -22,6 +22,12 @@
                 <StackLayout>
                     <Button Text="Biometria" Clicked="Button_Clicked_3"/>
                 </StackLayout>
+                <StackLayout>
+                    <Button Text="instagram" Clicked="Button_Clicked_4"/>
+                </StackLayout>
+                <StackLayout>
+                    <Button Text="notificacao" Clicked="Button_Clicked_5"/>
+                </StackLayout>
             </StackLayout>
         </ContentPage>
     </MasterDetailPage.Master>

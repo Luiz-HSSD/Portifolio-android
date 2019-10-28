@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"
              mc:Ignorable="d"
              x:Class="App4.MediaPage">
   <ContentPage.Content>
@@ -13,7 +14,7 @@
                 <Button x:Name="takeVideo" Text="Take Video"/>
                 <Button x:Name="pickVideo" Text="Pick Video"/>
 
-                <Image x:Name="image"/>
+                <ff:CachedImage Source="https://s1.logaster.com/static/v3/img/products/logo.png" CacheDuration="7" x:Name="image"/>
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>
