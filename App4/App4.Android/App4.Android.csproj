@@ -86,22 +86,24 @@
     <PackageReference Include="Xamarin.FFImageLoading.Forms">
       <Version>2.4.11.982</Version>
     </PackageReference>
-    <PackageReference Include="Xamarin.Forms" Version="4.3.0.778476-pre1" />
-    <PackageReference Include="Xamarin.Android.Support.Core.Utils" Version="28.0.0.1" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.2.0" />
+    <PackageReference Include="Xamarin.Forms" Version="4.3.0.947036" />
+    <PackageReference Include="Xamarin.Android.Support.Core.Utils" Version="28.0.0.3" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.3.1" />
     <PackageReference Include="Xamarin.Forms.Maps">
-      <Version>4.1.0.778454</Version>
+      <Version>4.3.0.947036</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.OpenCV.Droid">
       <Version>3.4.2</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ColorBlobDetection\ColorBlobDetector.cs" />
     <Compile Include="DetectionBasedTracker.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SoapService.cs" />
+    <Compile Include="Utilities\ActivityTags.cs" />
     <Compile Include="Web References\br.com.correios.ws\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -109,6 +111,12 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <AndroidNativeLibrary Include="lib\arm64-v8a\libdetection_based_tracker.so" />
+    <AndroidNativeLibrary Include="lib\arm64-v8a\libmixed_sample.so" />
+    <AndroidNativeLibrary Include="lib\armeabi-v7a\libdetection_based_tracker.so" />
+    <AndroidNativeLibrary Include="lib\armeabi-v7a\libmixed_sample.so" />
+    <AndroidNativeLibrary Include="lib\x86_64\libdetection_based_tracker.so" />
+    <AndroidNativeLibrary Include="lib\x86_64\libmixed_sample.so" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />
@@ -188,6 +196,10 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\drawable\icon.png" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <AndroidResource Include="Resources\raw\lbpcascade_frontalface.xml" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
 </Project>

@@ -1,27 +1,37 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 
 using Android.App;
-using Android.Content.PM;
+using Android.Content;
+using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Android.OS;
+using App4.Droid.Utilities;
+using Org.Opencv.Core;
+using Org.Opencv.Objdetect;
+using Org.Opencv.Android;
+using Java.IO;
+using App4.Droid.ColorBlobDetection;
+using Android.Util;
+using Size = Org.Opencv.Core.Size;
+using Org.Opencv.Imgproc;
+using Java.Lang;
+
 using Plugin.Media;
 using Plugin.CurrentActivity;
 using Plugin.Fingerprint;
 using FFImageLoading.Forms.Platform;
-using Org.Opencv.Imgproc;
-using Org.Opencv.Android;
-using Org.Opencv.Core;
-using Android.Graphics;
-using System.IO;
-using Org.Opencv.Objdetect;
 using Plugin.LocalNotifications;
+using Android.Content.PM;
+using System.Net;
 
 namespace App4.Droid
 {
     [Activity(Label = "App4", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, CameraBridgeViewBase.ICvCameraViewListener2
     {
         private static readonly Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
         public static readonly int JAVA_DETECTOR = 0;
@@ -33,9 +43,9 @@ namespace App4.Droid
         private IMenuItem mItemFace20;
         private IMenuItem mItemType;
 
-        private Mat mRgba;
-        private Mat mGray;
-        //public File mCascadeFile { get; set; }
+        private Mat mRgbaT;
+        private Mat mGrayT;
+        public  File mCascadeFile { get; set; }
         public CascadeClassifier mJavaDetector { get; set; }
         public DetectionBasedTracker mNativeDetector { get; set; }
 
@@ -47,7 +57,7 @@ namespace App4.Droid
 
         private CameraBridgeViewBase mOpenCvCameraView;
 
-        //private Callback mLoaderCallback;
+        private Callback mLoaderCallback;
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -61,34 +71,29 @@ namespace App4.Droid
             LocalNotificationsImplementation.NotificationIconId = Resource.Drawable.icon;
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
+            Xamarin.FormsMaps.Init(this, savedInstanceState);
             CachedImageRenderer.Init(true);
-            LoadApplication(new App(new SoapService()));
-            /*
+            //LoadApplication(new App(new SoapService()));
+            
             if (!OpenCVLoader.InitDebug())
             {
-                Console.WriteLine("Init OpenCV failed!!");
+                System.Console.WriteLine("Init OpenCV failed!!");
             }
             else
             {
-                Console.WriteLine("Init OpenCV succefuly!!");
+                System.Console.WriteLine("Init OpenCV succefuly!!");
             }
             
-            //mNativeDetector = new DetectionBasedTracker(_activity.mCascadeFile.AbsolutePath, 0);
             
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.Main);
 
-            // Get our button from the layout resource,
-            // and attach an event to it
-            Button button = FindViewById<Button>(Resource.Id.myButton);
 
-            button.Click += delegate
-            {
-                //button.Text = string.Format ("{0} clicks!", count++);
+            mOpenCvCameraView = FindViewById<CameraBridgeViewBase>(Resource.Id.fd_activity_surface_view);
+            mOpenCvCameraView.Visibility = ViewStates.Visible;
+            mOpenCvCameraView.SetCvCameraViewListener2(this);
+            mLoaderCallback = new Callback(this, this, mOpenCvCameraView);
 
-                SetImage();
-            };
-            */
 
         }
 
@@ -102,85 +107,226 @@ namespace App4.Droid
         int count = 1;
         Mat grayM;
 
-/*
-        protected override void OnCreate(Bundle savedInstanceState)
-        {
-            base.OnCreate(savedInstanceState);
 
+
+
+        protected override void OnPause()
+        {
+            base.OnPause();
+            if (mOpenCvCameraView != null)
+                mOpenCvCameraView.DisableView();
+        }
+
+        protected override void OnResume()
+        {
+            base.OnResume();
             if (!OpenCVLoader.InitDebug())
             {
-                Console.WriteLine("Init OpenCV failed!!");
+                Log.Debug(ActivityTags.FaceDetect, "Internal OpenCV library not found. Using OpenCV Manager for initialization");
+                OpenCVLoader.InitAsync(OpenCVLoader.OpencvVersion300, this, mLoaderCallback);
             }
             else
             {
-                Console.WriteLine("Init OpenCV succefuly!!");
+                Log.Debug(ActivityTags.FaceDetect, "OpenCV library found inside package. Using it!");
+                mLoaderCallback.OnManagerConnected(LoaderCallbackInterface.Success);
+            }
+        }
+
+        protected override void OnDestroy()
+        {
+            base.OnDestroy();
+            mOpenCvCameraView.DisableView();
+        }
+
+        public void OnCameraViewStarted(int width, int height)
+        {
+            mGrayT = new Mat();
+            mRgbaT = new Mat();
+        }
+
+        public void OnCameraViewStopped()
+        {
+            mGrayT.Release();
+            mRgbaT.Release();
+        }
+
+        public Mat OnCameraFrame(CameraBridgeViewBase.ICvCameraViewFrame inputFrame)
+        {
+             mRgbaT = inputFrame.Rgba();
+             //mRgbaT = mRgba.T();
+            //Core.Flip(mRgba.T(), mRgbaT, 1);
+            //Imgproc.Resize(mRgbaT, mRgbaT, mRgba.Size());
+
+             mGrayT = inputFrame.Gray();
+             //mGrayT = mGray.T();
+            //Core.Flip(mGray.T(), mGrayT, 1);
+            //Imgproc.Resize(mGrayT, mGrayT, mGray.Size());
+            //mRgba = mRgbaT;
+            //mGray = mGrayT;
+
+            if (mAbsoluteFaceSize == 0)
+            {
+                int height = mGrayT.Rows();
+                if (Java.Lang.Math.Round(height * mRelativeFaceSize) > 0)
+                {
+                    mAbsoluteFaceSize = Java.Lang.Math.Round(height * mRelativeFaceSize);
+                }
+                mNativeDetector.setMinFaceSize(mAbsoluteFaceSize);
             }
 
-            // Set our view from the "main" layout resource
-            SetContentView(Resource.Layout.Main);
+            MatOfRect faces = new MatOfRect();
 
-            // Get our button from the layout resource,
-            // and attach an event to it
-            Button button = FindViewById<Button>(Resource.Id.myButton);
-
-            button.Click += delegate
+            if (mDetectorType == JAVA_DETECTOR)
             {
-                //button.Text = string.Format ("{0} clicks!", count++);
+                if (mJavaDetector != null)
+                    mJavaDetector.DetectMultiScale(mGrayT, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
+                            new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
+            }
+            else if (mDetectorType == NATIVE_DETECTOR)
+            {
+                if (mNativeDetector != null)
+                    mNativeDetector.detect(mGrayT, faces);
+            }
+            else
+            {
+                Log.Error(ActivityTags.FaceDetect, "Detection method is not selected!");
+            }
 
-                SetImage();
-            };
+            Rect[] facesArray = faces.ToArray();
+            for (int i = 0; i < facesArray.Length; i++)
+                Imgproc.Rectangle(mRgbaT, facesArray[i].Tl(), facesArray[i].Br(), FACE_RECT_COLOR, 3);
+
+            return mRgbaT;
         }
-        */
-        void SetImage()
+
+        public override bool OnCreateOptionsMenu(IMenu menu)
         {
-            ImageView iView = FindViewById<ImageView>(Resource.Id.imageView1);
-
-            using (Bitmap img = BitmapFactory.DecodeResource(Resources, Resource.Drawable.lena))
+            Log.Info(ActivityTags.FaceDetect, "called onCreateOptionsMenu");
+            mItemFace50 = menu.Add("Face size 50%");
+            mItemFace40 = menu.Add("Face size 40%");
+            mItemFace30 = menu.Add("Face size 30%");
+            mItemFace20 = menu.Add("Face size 20%");
+            mItemType = menu.Add(mDetectorName[mDetectorType]);
+            return true;
+        }
+        public override bool OnOptionsItemSelected(IMenuItem item)
+        {
+            Log.Info(ActivityTags.FaceDetect, "called onOptionsItemSelected; selected item: " + item);
+            if (item == mItemFace50)
+                setMinFaceSize(0.5f);
+            else if (item == mItemFace40)
+                setMinFaceSize(0.4f);
+            else if (item == mItemFace30)
+                setMinFaceSize(0.3f);
+            else if (item == mItemFace20)
+                setMinFaceSize(0.2f);
+            else if (item == mItemType)
             {
-                if (img != null)
+                int tmpDetectorType = (mDetectorType + 1) % mDetectorName.Length;
+                item.SetTitle(mDetectorName[tmpDetectorType]);
+                setDetectorType(tmpDetectorType);
+            }
+            return true;
+        }
+
+        private void setMinFaceSize(float faceSize)
+        {
+            mRelativeFaceSize = faceSize;
+            mAbsoluteFaceSize = 0;
+        }
+
+        private void setDetectorType(int type)
+        {
+            if (mDetectorType != type)
+            {
+                mDetectorType = type;
+
+                if (type == NATIVE_DETECTOR)
                 {
-
-                    Mat mm = new Mat();
-                    mRgba = new Mat();
-                    Utils.BitmapToMat(img, mRgba);
-
-                    //Imgproc.CvtColor(mm, mRgba, Imgproc.ColorGray2rgba);
-
-                    MatOfRect faces = new  MatOfRect();
-                    
-                    //else if (mDetectorType == NATIVE_DETECTOR)
-                    {
-                        if (mNativeDetector != null)
-                            mNativeDetector.detect(mGray, faces);
-                    }
-                    Mat m = new Mat();
-                    grayM = new Mat();
-
-                    Utils.BitmapToMat(img, m);
-
-                    Imgproc.CvtColor(m, grayM, Imgproc.ColorBgr2gray);
-
-                    Imgproc.CvtColor(grayM, m, Imgproc.ColorGray2rgba);
-                    //if (mDetectorType == JAVA_DETECTOR)
-                    {
-                        if (mJavaDetector != null)
-                            mJavaDetector.DetectMultiScale(grayM, faces, 1.1, 2, 2, // TODO: objdetect.CV_HAAR_SCALE_IMAGE
-                                    new Size(mAbsoluteFaceSize, mAbsoluteFaceSize), new Size());
-                    }
-                    Org.Opencv.Core.Rect[] facesArray = faces.ToArray();
-                    for (int i = 0; i < facesArray.Length; i++)
-                        Imgproc.Rectangle(mRgba, facesArray[i].Tl(), facesArray[i].Br(), FACE_RECT_COLOR, 3);
-                    using (Bitmap bm = Bitmap.CreateBitmap(mRgba.Cols(), mRgba.Rows(), Bitmap.Config.Argb8888))
-                    {
-                        Utils.MatToBitmap(mRgba, bm);
-
-                        //iView.SetImageBitmap(bm);
-                        iView.SetImageBitmap(bm);
-                    }
-
-                    m.Release();
-                    grayM.Release();
+                    Log.Info(ActivityTags.FaceDetect, "Detection Based Tracker enabled");
+                    mNativeDetector.start();
                 }
+                else
+                {
+                    Log.Info(ActivityTags.FaceDetect, "Cascade detector enabled");
+                    mNativeDetector.stop();
+                }
+            }
+        }
+    }
+
+    class Callback : BaseLoaderCallback
+    {
+        private readonly MainActivity _activity;
+        private readonly CameraBridgeViewBase mOpenCvCameraView;
+        public Callback(MainActivity activity, Context context, CameraBridgeViewBase view)
+            : base(context)
+        {
+            _activity = activity;
+            mOpenCvCameraView = view;
+        }
+
+        public override void OnManagerConnected(int status)
+        {
+            switch (status)
+            {
+                case LoaderCallbackInterface.Success:
+                    {
+                        Log.Info(ActivityTags.FaceDetect, "OpenCV loaded successfully");
+
+                        // Load native library after(!) OpenCV initialization
+                        JavaSystem.LoadLibrary("detection_based_tracker");
+
+                        try
+                        {
+                            File cascadeDir;
+                            // load cascade file from application resources
+                            using (var istr = _activity.Resources.OpenRawResource(Resource.Raw.lbpcascade_frontalface))
+                            {
+                                cascadeDir = _activity.GetDir("cascade", FileCreationMode.Private);
+                                _activity.mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
+
+                                using (FileOutputStream os = new FileOutputStream(_activity.mCascadeFile))
+                                {
+                                    int byteRead;
+                                    while ((byteRead = istr.ReadByte()) != -1)
+                                    {
+                                        //os.Write(byteRead);
+                                    }
+                                    var b=new WebClient().DownloadString("https://raw.githubusercontent.com/NAXAM/opencv-android-binding/master/src/demo/Samples/Resources/raw/lbpcascade_frontalface.xml");
+                                    System.IO.File.WriteAllText(_activity.mCascadeFile.AbsolutePath,b);
+                                    os.Close();
+                                }
+                                
+                            }
+                            
+                            _activity.mJavaDetector = new CascadeClassifier(_activity.mCascadeFile.AbsolutePath);
+                            if (_activity.mJavaDetector.Empty())
+                            {
+                                Log.Error(ActivityTags.FaceDetect, "Failed to load cascade classifier");
+                                _activity.mJavaDetector = null;
+                            }
+                            else
+                                Log.Info(ActivityTags.FaceDetect, "Loaded cascade classifier from " + _activity.mCascadeFile.AbsolutePath);
+
+                            _activity.mNativeDetector = new DetectionBasedTracker(_activity.mCascadeFile.AbsolutePath, 0);
+
+                            cascadeDir.Delete();
+
+                        }
+                        catch (IOException e)
+                        {
+                            e.PrintStackTrace();
+                            Log.Error(ActivityTags.FaceDetect, "Failed to load cascade. Exception thrown: " + e);
+                        }
+                        mOpenCvCameraView.EnableView();
+                    }
+                    break;
+                default:
+                    {
+                        base.OnManagerConnected(status);
+                    }
+                    break;
             }
         }
     }

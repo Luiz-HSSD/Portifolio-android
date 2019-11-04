@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Maps;
 using Xamarin.Forms.Xaml;
 
 namespace App4
@@ -14,6 +15,8 @@ namespace App4
     {
         public MapsApi()
         {
+
+           
             InitializeComponent();
         }
     }

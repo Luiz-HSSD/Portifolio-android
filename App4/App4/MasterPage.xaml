@@ -28,6 +28,9 @@
                 <StackLayout>
                     <Button Text="notificacao" Clicked="Button_Clicked_5"/>
                 </StackLayout>
+                <StackLayout>
+                    <Button Text="Maps api" Clicked="Button_Clicked_6"/>
+                </StackLayout>
             </StackLayout>
         </ContentPage>
     </MasterDetailPage.Master>
