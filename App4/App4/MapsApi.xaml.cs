@@ -16,7 +16,8 @@ namespace App4
         public MapsApi()
         {
 
-           
+            NavigationPage.SetHasBackButton(this, false);
+
             InitializeComponent();
         }
     }

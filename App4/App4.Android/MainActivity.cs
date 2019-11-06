@@ -1,4 +1,6 @@
-﻿using System;
+﻿
+#define portifolio
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +21,6 @@ using Android.Util;
 using Size = Org.Opencv.Core.Size;
 using Org.Opencv.Imgproc;
 using Java.Lang;
-
 using Plugin.Media;
 using Plugin.CurrentActivity;
 using Plugin.Fingerprint;
@@ -27,11 +28,13 @@ using FFImageLoading.Forms.Platform;
 using Plugin.LocalNotifications;
 using Android.Content.PM;
 using System.Net;
+using ZXing.Mobile;
 
 namespace App4.Droid
 {
     [Activity(Label = "App4", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, CameraBridgeViewBase.ICvCameraViewListener2
+    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity 
+        //,CameraBridgeViewBase.ICvCameraViewListener2
     {
         private static readonly Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
         public static readonly int JAVA_DETECTOR = 0;
@@ -64,7 +67,8 @@ namespace App4.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
-
+            MobileBarcodeScanner.Initialize(this.Application);
+            
             await CrossMedia.Current.Initialize();
             CrossFingerprint.SetCurrentActivityResolver(() => CrossCurrentActivity.Current.Activity);
             CrossCurrentActivity.Current.Init(this, savedInstanceState);
@@ -73,8 +77,9 @@ namespace App4.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Xamarin.FormsMaps.Init(this, savedInstanceState);
             CachedImageRenderer.Init(true);
-            //LoadApplication(new App(new SoapService()));
-            
+#if portifolio
+            LoadApplication(new App(new SoapService()));
+#else
             if (!OpenCVLoader.InitDebug())
             {
                 System.Console.WriteLine("Init OpenCV failed!!");
@@ -94,14 +99,14 @@ namespace App4.Droid
             mOpenCvCameraView.SetCvCameraViewListener2(this);
             mLoaderCallback = new Callback(this, this, mOpenCvCameraView);
 
-
+#endif
         }
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
             Plugin.Permissions.PermissionsImplementation.Current.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
-
+            global::ZXing.Net.Mobile.Android.PermissionsHandler.OnRequestPermissionsResult(requestCode, permissions, grantResults);
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
         }
         int count = 1;
@@ -109,7 +114,7 @@ namespace App4.Droid
 
 
 
-
+#if !portifolio
         protected override void OnPause()
         {
             base.OnPause();
@@ -119,6 +124,7 @@ namespace App4.Droid
 
         protected override void OnResume()
         {
+
             base.OnResume();
             if (!OpenCVLoader.InitDebug())
             {
@@ -253,6 +259,7 @@ namespace App4.Droid
                 }
             }
         }
+#endif
     }
 
     class Callback : BaseLoaderCallback
@@ -329,5 +336,6 @@ namespace App4.Droid
                     break;
             }
         }
+
     }
 }

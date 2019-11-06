@@ -9,6 +9,7 @@
              x:Class="App4.MasterPage">
     <MasterDetailPage.Master>
         <ContentPage Title="teste">
+            <ScrollView>
             <StackLayout>
                 <StackLayout>
                     <Button Text="camera" Clicked="Button_Clicked_1"/>
@@ -31,7 +32,11 @@
                 <StackLayout>
                     <Button Text="Maps api" Clicked="Button_Clicked_6"/>
                 </StackLayout>
-            </StackLayout>
+                <StackLayout>
+                    <Button Text="qr ou código de barras" Clicked="Button_Clicked_7"/>
+                </StackLayout>
+                </StackLayout>
+            </ScrollView>
         </ContentPage>
     </MasterDetailPage.Master>
     <MasterDetailPage.Detail NavigationPage.HasBackButton="False">

@@ -79,5 +79,14 @@ namespace App4
             await NavPag.PushAsync(new MapsApi());
             IsPresented = false;
         }
+
+        private async void Button_Clicked_7(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new Scan());
+            IsPresented = false;
+
+        }
     }
 }
