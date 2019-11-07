@@ -8,9 +8,11 @@ namespace App4
     public partial class App : Application
     {
         public static ISoapService service;
-        public App(ISoapService service)
+        public static OpenCVforms serviceOpencv;
+        public App(ISoapService service, OpenCVforms serviceOpencv)
         {
             App.service = service;
+            App.serviceOpencv= serviceOpencv;
             InitializeComponent();
  
 

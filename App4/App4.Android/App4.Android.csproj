@@ -108,6 +108,7 @@
   <ItemGroup>
     <Compile Include="ColorBlobDetection\ColorBlobDetector.cs" />
     <Compile Include="DetectionBasedTracker.cs" />
+    <Compile Include="OpenCVActivity.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

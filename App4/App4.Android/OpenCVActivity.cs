@@ -1,5 +1,5 @@
 ﻿
-#define portifolio
+//#define portifolio
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +33,7 @@ using ZXing.Mobile;
 namespace App4.Droid
 {
     [Activity(Label = "App4", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
-    public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity 
-        //,CameraBridgeViewBase.ICvCameraViewListener2
+    public class OpenCVActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, CameraBridgeViewBase.ICvCameraViewListener2, App4.OpenCVforms
     {
         private static readonly Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
         public static readonly int JAVA_DETECTOR = 0;
@@ -77,9 +76,7 @@ namespace App4.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Xamarin.FormsMaps.Init(this, savedInstanceState);
             CachedImageRenderer.Init(true);
-#if portifolio
-            LoadApplication(new App(new SoapService(),new OpenCVActivity()));
-#else
+
             if (!OpenCVLoader.InitDebug())
             {
                 System.Console.WriteLine("Init OpenCV failed!!");
@@ -99,8 +96,9 @@ namespace App4.Droid
             mOpenCvCameraView.SetCvCameraViewListener2(this);
             mLoaderCallback = new Callback(this, this, mOpenCvCameraView);
 
-#endif
         }
+
+
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -114,7 +112,6 @@ namespace App4.Droid
 
 
 
-#if !portifolio
         protected override void OnPause()
         {
             base.OnPause();
@@ -259,7 +256,92 @@ namespace App4.Droid
                 }
             }
         }
-#endif
+
+        public void BackForms()
+        {
+            LoadApplication(new App(new SoapService(), new OpenCVActivity()));
+        }
+
+        public void GoOpenCV()
+        {
+            SetContentView(Resource.Layout.Main);
+        }
     }
 
+    class Callback : BaseLoaderCallback
+    {
+        private readonly OpenCVActivity _activity;
+        private readonly CameraBridgeViewBase mOpenCvCameraView;
+        public Callback(OpenCVActivity activity, Context context, CameraBridgeViewBase view)
+            : base(context)
+        {
+            _activity = activity;
+            mOpenCvCameraView = view;
+        }
+
+        public override void OnManagerConnected(int status)
+        {
+            switch (status)
+            {
+                case LoaderCallbackInterface.Success:
+                    {
+                        Log.Info(ActivityTags.FaceDetect, "OpenCV loaded successfully");
+
+                        // Load native library after(!) OpenCV initialization
+                        JavaSystem.LoadLibrary("detection_based_tracker");
+
+                        try
+                        {
+                            File cascadeDir;
+                            // load cascade file from application resources
+                            using (var istr = _activity.Resources.OpenRawResource(Resource.Raw.lbpcascade_frontalface))
+                            {
+                                cascadeDir = _activity.GetDir("cascade", FileCreationMode.Private);
+                                _activity.mCascadeFile = new File(cascadeDir, "lbpcascade_frontalface.xml");
+
+                                using (FileOutputStream os = new FileOutputStream(_activity.mCascadeFile))
+                                {
+                                    int byteRead;
+                                    while ((byteRead = istr.ReadByte()) != -1)
+                                    {
+                                        //os.Write(byteRead);
+                                    }
+                                    var b=new WebClient().DownloadString("https://raw.githubusercontent.com/NAXAM/opencv-android-binding/master/src/demo/Samples/Resources/raw/lbpcascade_frontalface.xml");
+                                    System.IO.File.WriteAllText(_activity.mCascadeFile.AbsolutePath,b);
+                                    os.Close();
+                                }
+                                
+                            }
+                            
+                            _activity.mJavaDetector = new CascadeClassifier(_activity.mCascadeFile.AbsolutePath);
+                            if (_activity.mJavaDetector.Empty())
+                            {
+                                Log.Error(ActivityTags.FaceDetect, "Failed to load cascade classifier");
+                                _activity.mJavaDetector = null;
+                            }
+                            else
+                                Log.Info(ActivityTags.FaceDetect, "Loaded cascade classifier from " + _activity.mCascadeFile.AbsolutePath);
+
+                            _activity.mNativeDetector = new DetectionBasedTracker(_activity.mCascadeFile.AbsolutePath, 0);
+
+                            cascadeDir.Delete();
+
+                        }
+                        catch (IOException e)
+                        {
+                            e.PrintStackTrace();
+                            Log.Error(ActivityTags.FaceDetect, "Failed to load cascade. Exception thrown: " + e);
+                        }
+                        mOpenCvCameraView.EnableView();
+                    }
+                    break;
+                default:
+                    {
+                        base.OnManagerConnected(status);
+                    }
+                    break;
+            }
+        }
+
+    }
 }
