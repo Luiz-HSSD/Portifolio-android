@@ -22,6 +22,8 @@ namespace App4.Droid.Services
         {
             var optionsCustom = new MobileBarcodeScanningOptions()
             {
+                // DisableAutofocus=true,
+                //CameraResolutionSelector=new CameraResolution()
                 //UseFrontCameraIfAvailable = true
             };
             var scanner = new MobileBarcodeScanner()

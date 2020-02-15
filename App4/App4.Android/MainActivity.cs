@@ -29,6 +29,14 @@ using Plugin.LocalNotifications;
 using Android.Content.PM;
 using System.Net;
 using ZXing.Mobile;
+using Badge.Plugin;
+using Poz1.NFCForms.Abstract;
+using Poz1.NFCForms.Droid;
+using Android.Nfc;
+using Android.OS;
+using Android.Content;
+using Android.Content.PM;
+using Android.Telephony;
 
 namespace App4.Droid
 {
@@ -51,6 +59,7 @@ namespace App4.Droid
         public  File mCascadeFile { get; set; }
         public CascadeClassifier mJavaDetector { get; set; }
         public DetectionBasedTracker mNativeDetector { get; set; }
+        public object UIApplication { get; private set; }
 
         private int mDetectorType = JAVA_DETECTOR;
         private string[] mDetectorName;
@@ -61,6 +70,8 @@ namespace App4.Droid
         private CameraBridgeViewBase mOpenCvCameraView;
 
         private Callback mLoaderCallback;
+        public NfcAdapter NFCdevice;
+        public NfcForms x;
         protected override async void OnCreate(Bundle savedInstanceState)
         {
             TabLayoutResource = Resource.Layout.Tabbar;
@@ -68,7 +79,7 @@ namespace App4.Droid
 
             base.OnCreate(savedInstanceState);
             MobileBarcodeScanner.Initialize(this.Application);
-            
+            SmsAndroid.dev = this;
             await CrossMedia.Current.Initialize();
             CrossFingerprint.SetCurrentActivityResolver(() => CrossCurrentActivity.Current.Activity);
             CrossCurrentActivity.Current.Init(this, savedInstanceState);
@@ -77,8 +88,15 @@ namespace App4.Droid
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             Xamarin.FormsMaps.Init(this, savedInstanceState);
             CachedImageRenderer.Init(true);
+            NfcManager NfcManager = (NfcManager)Android.App.Application.Context.GetSystemService(Context.NfcService);
+            NFCdevice = NfcManager.DefaultAdapter;
+
+            Xamarin.Forms.DependencyService.Register<INfcForms, NfcForms>();
+            x = Xamarin.Forms.DependencyService.Get<INfcForms>() as NfcForms;
+
 #if portifolio
-            LoadApplication(new App(new SoapService(),new OpenCVActivity()));
+            CrossBadge.Current.SetBadge(9);
+            LoadApplication(new App(new SoapService(),new OpenCVActivity(),new SmsAndroid()));
 #else
             if (!OpenCVLoader.InitDebug())
             {
@@ -111,8 +129,40 @@ namespace App4.Droid
         }
         int count = 1;
         Mat grayM;
+#if portifolio
+        protected override void OnResume()
+        {
+            base.OnResume();
+            if (NFCdevice != null)
+            {
+                var intent = new Intent(this, GetType()).AddFlags(ActivityFlags.SingleTop);
+                NFCdevice.EnableForegroundDispatch
+                (
+                    this,
+                    PendingIntent.GetActivity(this, 0, intent, 0),
+                    new[] { new IntentFilter(NfcAdapter.ActionTechDiscovered) },
+                    new string[][] {new string[] {
+                            NFCTechs.Ndef,
+                        },
+                        new string[] {
+                            NFCTechs.MifareClassic,
+                        },
+                    }
+                );
+            }
+        }
+        protected override void OnPause()
+        {
+            base.OnPause();
+            NFCdevice.DisableForegroundDispatch(this);
+        }
 
-
+        protected override void OnNewIntent(Intent intent)
+        {
+            base.OnNewIntent(intent);
+            x.OnNewIntent(this, intent);
+        }
+#endif
 
 #if !portifolio
         protected override void OnPause()

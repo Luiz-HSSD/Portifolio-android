@@ -35,7 +35,7 @@ namespace App4
         {
             await NavPag.PopToRootAsync();
             await NavPag.PopAsync();
-            await NavPag.PushAsync(new MainPage());
+            await NavPag.PushAsync(new MediaPage());
             IsPresented = false;
         }
 
@@ -87,6 +87,33 @@ namespace App4
             await NavPag.PushAsync(new Scan());
             IsPresented = false;
 
+        }
+
+        private void Button_Clicked_8(object sender, EventArgs e)
+        {
+            App.serviceOpencv.GoOpenCV();
+        }
+
+        private async void Button_Clicked_10(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new sms());
+            IsPresented = false;
+        }
+        private async void Button_Clicked_11(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new NFC());
+            IsPresented = false;
+        }
+        private async void Button_Clicked_9(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new badge());
+            IsPresented = false;
         }
     }
 }

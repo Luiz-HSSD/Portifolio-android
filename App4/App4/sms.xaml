@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:d="http://xamarin.com/schemas/2014/forms/design"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             x:Class="App4.sms">
+    <ContentPage.Content>
+        <StackLayout>
+            <StackLayout>
+                <Label Text="destino"></Label> <Entry x:Name="num"></Entry>
+            </StackLayout>
+            <StackLayout>
+                <Label Text="mensagem"></Label><Entry  x:Name="msg"></Entry>
+            </StackLayout>
+            <StackLayout>
+                <Button Text="Enviar" x:Name="sendsSMS" Clicked="sendsSMS_Clicked"></Button>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

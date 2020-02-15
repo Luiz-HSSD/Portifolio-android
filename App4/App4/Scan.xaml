@@ -3,14 +3,24 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"             
              mc:Ignorable="d"
              x:Class="App4.Scan">
     <ContentPage.Content>
-        <StackLayout>
-            <Label Text="saida" x:Name="output"
-                VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
-            <Button Text="Scanner" Clicked="Button_OnClicked"></Button>
+        <StackLayout VerticalOptions="Fill" 
+                    HorizontalOptions="FillAndExpand">
+            <StackLayout>
+                <ff:CachedImage x:Name="imageqr"
+                    VerticalOptions="StartAndExpand" 
+                    HorizontalOptions="CenterAndExpand" CacheDuration="0" HeightRequest="300" WidthRequest="300" />
+            
+            </StackLayout>
+            <StackLayout>
+                <Label Text="saida" x:Name="output"
+                    VerticalOptions="CenterAndExpand" 
+                    HorizontalOptions="CenterAndExpand" />
+                <Button Text="Scanner" Clicked="Button_OnClicked"></Button>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -35,6 +35,16 @@
                 <StackLayout>
                     <Button Text="qr ou código de barras" Clicked="Button_Clicked_7"/>
                 </StackLayout>
+                <StackLayout>
+                    <Button Text="SMS" Clicked="Button_Clicked_10"/>
+                </StackLayout>
+                <StackLayout>
+                    <Button Text="NFC" Clicked="Button_Clicked_11"/>
+                </StackLayout>
+                <StackLayout>
+                    <Button Text="badge" Clicked="Button_Clicked_9"/>
+                </StackLayout>
+
                 </StackLayout>
             </ScrollView>
         </ContentPage>

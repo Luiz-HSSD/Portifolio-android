@@ -9,12 +9,15 @@ namespace App4
     {
         public static ISoapService service;
         public static OpenCVforms serviceOpencv;
-        public App(ISoapService service, OpenCVforms serviceOpencv)
+        public static Ibadge badge;
+        public static SmsBack sms;
+        public App(ISoapService service, OpenCVforms serviceOpencv,SmsBack sms)
         {
             App.service = service;
             App.serviceOpencv= serviceOpencv;
+            App.sms = sms;
             InitializeComponent();
- 
+            
 
             MainPage = new MasterPage();
         }

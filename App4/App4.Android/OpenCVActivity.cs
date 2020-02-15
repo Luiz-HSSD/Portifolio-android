@@ -32,7 +32,6 @@ using ZXing.Mobile;
 
 namespace App4.Droid
 {
-    [Activity(Label = "App4", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation)]
     public class OpenCVActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity, CameraBridgeViewBase.ICvCameraViewListener2, App4.OpenCVforms
     {
         private static readonly Scalar FACE_RECT_COLOR = new Scalar(0, 255, 0, 255);
@@ -259,7 +258,7 @@ namespace App4.Droid
 
         public void BackForms()
         {
-            LoadApplication(new App(new SoapService(), new OpenCVActivity()));
+            LoadApplication(new App(new SoapService(), new OpenCVActivity(),new SmsAndroid()));
         }
 
         public void GoOpenCV()

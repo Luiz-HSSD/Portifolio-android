@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Xamarin.Forms.Platform.Android;
+//using Xamarin.Forms.Platform.Android;
 
 namespace App4
 {
