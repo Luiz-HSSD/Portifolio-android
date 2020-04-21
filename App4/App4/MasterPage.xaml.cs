@@ -115,5 +115,13 @@ namespace App4
             await NavPag.PushAsync(new badge());
             IsPresented = false;
         }
+
+        private async void Button_Clicked_12(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new SSH());
+            IsPresented = false;
+        }
     }
 }

@@ -44,7 +44,9 @@
                 <StackLayout>
                     <Button Text="badge" Clicked="Button_Clicked_9"/>
                 </StackLayout>
-
+                <StackLayout>
+                    <Button Text="SSH" Clicked="Button_Clicked_12"/>
+                </StackLayout>
                 </StackLayout>
             </ScrollView>
         </ContentPage>
