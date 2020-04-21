@@ -123,5 +123,13 @@ namespace App4
             await NavPag.PushAsync(new SSH());
             IsPresented = false;
         }
+
+        private async void Button_Clicked_13(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new OSM());
+            IsPresented = false;
+        }
     }
 }

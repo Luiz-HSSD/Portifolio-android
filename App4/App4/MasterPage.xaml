@@ -47,6 +47,9 @@
                 <StackLayout>
                     <Button Text="SSH" Clicked="Button_Clicked_12"/>
                 </StackLayout>
+                <StackLayout>
+                    <Button Text="OSM" Clicked="Button_Clicked_13"/>
+                </StackLayout>
                 </StackLayout>
             </ScrollView>
         </ContentPage>
