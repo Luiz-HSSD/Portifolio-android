@@ -5,7 +5,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:ff="clr-namespace:FFImageLoading.Forms;assembly=FFImageLoading.Forms"             
              mc:Ignorable="d"
-             x:Class="App4.Scan">
+             x:Class="App4.Scan"
+             BackgroundColor="{DynamicResource PageBackgroundColor}">
     <ContentPage.Content>
         <StackLayout VerticalOptions="Fill" 
                     HorizontalOptions="FillAndExpand">

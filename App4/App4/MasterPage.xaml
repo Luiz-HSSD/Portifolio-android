@@ -6,9 +6,10 @@
              xmlns:Pages="clr-namespace:App4"
              mc:Ignorable="d"
                  
-             x:Class="App4.MasterPage">
+             x:Class="App4.MasterPage"
+            BackgroundColor="{DynamicResource PageBackgroundColor}">
     <MasterDetailPage.Master>
-        <ContentPage Title="teste">
+        <ContentPage BackgroundColor="{DynamicResource PageBackgroundColor}" Title="teste">
             <ScrollView>
             <StackLayout>
                 <StackLayout>
@@ -42,6 +43,9 @@
                     <Button Text="NFC" Clicked="Button_Clicked_11"/>
                 </StackLayout>
                 <StackLayout>
+                    <Button Text="Plugin.NFC" Clicked="Button_Clicked_15"/>
+                </StackLayout>
+                <StackLayout>
                     <Button Text="badge" Clicked="Button_Clicked_9"/>
                 </StackLayout>
                 <StackLayout>
@@ -49,6 +53,12 @@
                 </StackLayout>
                 <StackLayout>
                     <Button Text="OSM" Clicked="Button_Clicked_13"/>
+                </StackLayout>
+                <StackLayout>
+                    <Button Text="Charts" Clicked="Button_Clicked_14"/>
+                </StackLayout>
+                <StackLayout>
+                    <Button Text="tema" Clicked="Button_Clicked_16"/>
                 </StackLayout>
                 </StackLayout>
             </ScrollView>

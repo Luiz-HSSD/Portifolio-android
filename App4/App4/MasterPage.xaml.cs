@@ -131,5 +131,29 @@ namespace App4
             await NavPag.PushAsync(new OSM());
             IsPresented = false;
         }
+
+        private async void Button_Clicked_14(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new ChartsPage());
+            IsPresented = false;
+        }
+
+        private async void Button_Clicked_15(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new NFC2());
+            IsPresented = false;
+        }
+
+        private async void Button_Clicked_16(object sender, EventArgs e)
+        {
+            await NavPag.PopToRootAsync();
+            await NavPag.PopAsync();
+            await NavPag.PushAsync(new Theme());
+            IsPresented = false;
+        }
     }
 }

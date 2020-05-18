@@ -4,8 +4,10 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             xmlns:mapsui="clr-namespace:Mapsui.Forms;assembly=Mapsui.Forms"
-             x:Class="App4.OSM">
+             xmlns:mapsui="clr-namespace:Mapsui.UI.Forms;assembly=Mapsui.UI.Forms"
+             x:Class="App4.OSM"
+             BackgroundColor="{DynamicResource PageBackgroundColor}"
+             >
     <ContentPage.Content>
         <StackLayout>
             <mapsui:MapView x:Name="mapView"

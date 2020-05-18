@@ -4,19 +4,11 @@
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
-             x:Class="App4.sms"
+             x:Class="App4.Theme"
              BackgroundColor="{DynamicResource PageBackgroundColor}">
     <ContentPage.Content>
         <StackLayout>
-            <StackLayout>
-                <Label Text="destino"></Label> <Entry x:Name="num"></Entry>
-            </StackLayout>
-            <StackLayout>
-                <Label Text="mensagem"></Label><Entry  x:Name="msg"></Entry>
-            </StackLayout>
-            <StackLayout>
-                <Button Text="Enviar" x:Name="sendsSMS" Clicked="sendsSMS_Clicked"></Button>
-            </StackLayout>
+            <Switch Toggled="Switch_Toggled" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

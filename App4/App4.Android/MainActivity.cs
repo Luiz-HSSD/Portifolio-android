@@ -37,6 +37,7 @@ using Android.OS;
 using Android.Content;
 using Android.Content.PM;
 using Android.Telephony;
+using Plugin.NFC;
 
 namespace App4.Droid
 {
@@ -90,7 +91,7 @@ namespace App4.Droid
             CachedImageRenderer.Init(true);
             NfcManager NfcManager = (NfcManager)Android.App.Application.Context.GetSystemService(Context.NfcService);
             NFCdevice = NfcManager.DefaultAdapter;
-
+            CrossNFC.Init(this);
             Xamarin.Forms.DependencyService.Register<INfcForms, NfcForms>();
             x = Xamarin.Forms.DependencyService.Get<INfcForms>() as NfcForms;
 
@@ -119,6 +120,7 @@ namespace App4.Droid
 
 #endif
         }
+
 
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {
@@ -161,6 +163,7 @@ namespace App4.Droid
         {
             base.OnNewIntent(intent);
             x.OnNewIntent(this, intent);
+            CrossNFC.OnNewIntent(intent);
         }
 #endif
 

@@ -6,6 +6,6 @@
              mc:Ignorable="d"
              x:Class="App4.App">
     <Application.Resources>
-
+        <ResourceDictionary Source="Themes/LightTheme.xaml" />
     </Application.Resources>
 </Application>
